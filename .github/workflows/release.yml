@@ -1,0 +1,66 @@
+
+# Publish a new Release
+name: Release
+
+on:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+.[0-9]+*']
+
+jobs:
+  build:
+
+    name: Publish
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # ================================
+    # CHECKOUT
+    # ================================
+    - name: Checkout git tag
+      uses: actions/checkout@v3
+
+    # ================================
+    # SET UP JDK
+    # ================================
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-package: jdk
+        java-version: 21
+
+    # ================================
+    # CREATE RELEASE
+    # ================================
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+
+    # ================================
+    # PUBLISH
+    # ================================
+    - name: Publish
+      env:
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        GITHUB_USERNAME: ${{ secrets.PUBLISH_USERNAME }}
+        GITHUB_PASSWORD: ${{ secrets.PUBLISH_PASSWORD }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: publish --info --scan
+
+    # ================================
+    # PUBLISH JAVADOC
+    # ================================
+    - name: Publish Javadoc to GitHub Pages
+      shell: bash
+      run: |
+        cp -r api/build/docs/javadoc docs/javadoc/${GITHUB_REF#refs/tags/}
+        git config user.name "Guillermo Calvo"
+        git config user.email "guillermo@guillermo.dev"
+        git add docs/javadoc/${GITHUB_REF#refs/tags/}
+        git status
+        git commit --message "Publish Javadoc to GitHub Pages"
+        git push origin HEAD:main
