@@ -1,0 +1,76 @@
+// Package javadoc and sources
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// Configure publishing repositories and publications
+publishing {
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/LeakyAbstractions/result')
+            credentials {
+                username = System.env.GITHUB_USERNAME
+                password = System.env.GITHUB_PASSWORD
+            }
+        }
+    }
+    publications {
+        mavenRelease(MavenPublication) {
+            pom {
+                groupId         = rootProject.group
+                artifactId      = rootProject.artifactId
+                name            = rootProject.artifactName
+                description     = rootProject.artifactDescription
+                version         = rootProject.version
+                url             = rootProject.homepage
+                licenses {
+                    license {
+                        name    = rootProject.licenseName
+                        url     = rootProject.licenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id      = rootProject.developerId
+                        name    = rootProject.developerName
+                        email   = rootProject.developerEmail
+                    }
+                }
+                organization {
+                    name        = rootProject.organizationName
+                    url         = rootProject.organizationUrl
+                }
+                issueManagement {
+                    system      = rootProject.issuesSystem
+                    url         = rootProject.issuesUrl
+                }
+                ciManagement {
+                    system      = rootProject.ciSystem
+                    url         = rootProject.ciUrl
+                }
+                scm {
+                    url         = rootProject.repository
+                    connection  = rootProject.checkout
+                }
+            }
+            from(components.java)
+        }
+    }
+}
+
+signing {
+    def signingKey = System.env.SIGNING_KEY
+    def signingPassword = System.env.SIGNING_PASSWORD
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenRelease
+}
+
+publish {
+    finalizedBy publishToSonatype
+}
+
+publishToSonatype {
+    finalizedBy ':closeAndReleaseSonatypeStagingRepository'
+}

@@ -1,0 +1,10 @@
+[versions]
+google-java-format = "1.18.1"
+nexus-publish = "2.0.0-rc-1"
+sonarqube = "4.4.1.3373"
+spotless = "6.22.0"
+
+[plugins]
+nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus-publish" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

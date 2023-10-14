@@ -1,0 +1,18 @@
+
+plugins {
+    id 'java-library'
+    id 'com.diffplug.spotless'
+    id 'org.sonarqube'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: project.file('compile.gradle')
+apply from: project.file('spotless.gradle')
+apply from: project.file('sonarqube.gradle')
+apply from: project.file('javadoc.gradle')
+apply from: project.file('publish.gradle')
