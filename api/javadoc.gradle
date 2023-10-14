@@ -1,0 +1,24 @@
+// Configure Javadoc
+javadoc {
+    options {
+        title project.artifactName
+        header "${project.artifactName} ${rootProject.version}"
+        author true
+        links 'https://docs.oracle.com/javase/8/docs/api/'
+    }
+    configure(options) {
+        tags(
+                'apiNote:a:API Note:',
+                'implNote:a:Impl Note:',
+                'implSpec:a:Impl Spec:'
+                )
+    }
+    doLast {
+        // work around https://github.com/gradle/gradle/issues/4046
+        copy {
+            from 'src/main/java'
+            into 'build/docs/javadoc/'
+            include '**/doc-files/**/*'
+        }
+    }
+}

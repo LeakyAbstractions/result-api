@@ -1,0 +1,11 @@
+// Java toolchain
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+// Configure java compiler
+tasks.withType(JavaCompile).all {
+    options.compilerArgs.addAll(['-Xlint:all', '-Werror'])
+}

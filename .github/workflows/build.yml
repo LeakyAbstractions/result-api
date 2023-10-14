@@ -1,0 +1,100 @@
+
+# Continuous Integration
+name: Build
+
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+    branches:
+    - main
+    - develop
+
+jobs:
+  build:
+
+    name: Build on JDK${{ matrix.jdk }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        jdk: [ 11, 17, 21 ]
+
+    steps:
+
+    # ================================
+    # SHALLOW CLONE
+    # ================================
+    - name: Shallow clone
+      if: ${{ matrix.jdk != 21 }}
+      uses: actions/checkout@v3
+
+    # ================================
+    # CHECKOUT
+    # ================================
+    - name: Checkout git branch
+      if: ${{ matrix.jdk == 21 }}
+      uses: actions/checkout@v3
+      with:
+        # Fetch all history for all tags and branches (recommended by SonarQube)
+        fetch-depth: 0
+
+    # ================================
+    # SET UP JDK
+    # ================================
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-package: jdk
+        java-version: ${{ matrix.jdk }}
+
+    # ================================
+    # CACHE SONARCLOUD PACKAGES
+    # ================================
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-sonar
+        path: |
+          ~/.sonar/cache
+        restore-keys: |
+          ${{ runner.os }}-sonar
+
+    # ================================
+    # SETUP GRADLE
+    # ================================
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+    # ================================
+    # BUILD
+    # ================================
+    - name: Build
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: build -x check --info --scan
+
+    # ================================
+    # CHECK
+    # ================================
+    - name: Check
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: check --info --scan
+
+    # ================================
+    # ANALYZE
+    # ================================
+    - name: Analyze
+      if: ${{ matrix.jdk == 21 }}
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarcloud.io
+        SONAR_ORGANIZATION: leakyabstractions
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: sonarqube --info --scan
