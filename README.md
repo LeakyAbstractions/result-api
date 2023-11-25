@@ -3,6 +3,7 @@
 [![Quality Gate Status][BADGE_QUALITY_GATE]][QUALITY_GATE]
 [![Maven Central][BADGE_ARTIFACTS]][ARTIFACTS]
 [![Javadoc][BADGE_JAVADOC]][JAVADOC]
+[![Benchmark Report][BADGE_BENCHMARK]][BENCHMARK]
 
 
 ![Result Library for Java](docs/result.svg)
@@ -201,6 +202,7 @@ See the License for the specific language governing permissions and limitations 
 [ARTIFACTS]:                    https://search.maven.org/artifact/com.leakyabstractions/result-api/
 [AUTHOR]:                       https://github.com/guillermocalvo/
 [BADGE_ARTIFACTS]:              https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-api/badge.json&logo=Gradle&label=Maven+Central&labelColor=555
+[BADGE_BENCHMARK]:              https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-benchmark/badge.json&style=flat
 [BADGE_BUILD_STATUS]:           https://github.com/leakyabstractions/result-api/workflows/Build/badge.svg
 [BADGE_JAVADOC]:                https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-api/badge.json&label=javadoc&color=blue
 [BADGE_QUALITY_GATE]:           https://sonarcloud.io/api/project_badges/measure?project=LeakyAbstractions_result-api&metric=alert_status
