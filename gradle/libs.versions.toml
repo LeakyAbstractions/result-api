@@ -1,5 +1,5 @@
 [versions]
-google-java-format = "1.18.1"
+google-java-format = "1.19.2"
 japicmp = "0.4.2"
 nexus-publish = "2.0.0-rc-2"
 sonarqube = "4.4.1.3373"
