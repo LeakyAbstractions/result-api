@@ -52,7 +52,7 @@ jobs:
         ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
         ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
         ORG_GRADLE_PROJECT_sonatypeStagingProfileId: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
-      run: ./gradlew publish -Prelease --info --scan
+      run: ./gradlew publish -Prelease --info
 
     # ================================
     # PUBLISH JAVADOC

@@ -82,13 +82,13 @@ jobs:
     # BUILD
     # ================================
     - name: Build version ${{ steps.properties.outputs.version }}
-      run: ./gradlew build -x check --info --scan
+      run: ./gradlew build -x check --info
 
     # ================================
     # CHECK
     # ================================
     - name: Check
-      run: ./gradlew check --info --scan
+      run: ./gradlew check --info
 
     # ================================
     # COMPATIBILITY REPORT
@@ -119,7 +119,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io
         SONAR_ORGANIZATION: leakyabstractions
-      run: ./gradlew sonarqube --info --scan
+      run: ./gradlew sonarqube --info
 
     # ================================
     # PUBLISH SNAPSHOT
@@ -131,4 +131,4 @@ jobs:
         ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.PUBLISH_PASSWORD }}
         ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
         ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
-      run: ./gradlew publish -Psnapshot --info --scan
+      run: ./gradlew publish -Psnapshot --info
