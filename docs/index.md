@@ -176,8 +176,8 @@ See the License for the specific language governing permissions and limitations 
 [ARTIFACTS]:                    https://search.maven.org/artifact/com.leakyabstractions/result-api/
 [AUTHOR]:                       https://github.com/guillermocalvo/
 [BENCHMARK]:                    https://dev.leakyabstractions.com/result-benchmark/
-[CODE_OF_CONDUCT]:              https://dev.leakyabstractions.com/result/CODE_OF_CONDUCT.html
-[CONTRIBUTING]:                 https://dev.leakyabstractions.com/result/CONTRIBUTING.html
+[CODE_OF_CONDUCT]:              https://github.com/LeakyAbstractions/.github/blob/main/CODE_OF_CONDUCT.md
+[CONTRIBUTING]:                 https://github.com/LeakyAbstractions/.github/blob/main/CONTRIBUTING.md
 [GUILLERMO]:                    https://guillermo.dev/
 [GUILLERMO_IMAGE]:              https://guillermo.dev/assets/images/thumb.png
 [JAVADOC]:                      https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/
@@ -201,4 +201,4 @@ See the License for the specific language governing permissions and limitations 
 [JAVADOC_STREAM_FAILURE]:       https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#streamFailure--
 [JAVADOC_STREAM_SUCCESS]:       https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#streamSuccess--
 [PRAGVER]:                      https://pragver.github.io/
-[SUPPORT]:                      https://dev.leakyabstractions.com/result/SUPPORT.html
+[SUPPORT]:                      https://github.com/LeakyAbstractions/.github/blob/main/SUPPORT.md
