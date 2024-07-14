@@ -23,50 +23,23 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Represents either the success or failure of an operation, including an associated value in each case.
- * <p>
- * On the one hand, a result object conveys one of these two mutually-exclusive states:
+ * Encapsulates a single non-null value, representing the outcome of an operation that can either <em>succeed</em> or
+ * <em>fail</em>.
  * <ul>
- * <li><strong>Success</strong>: the operation completed entirely.
- * <li><strong>Failure</strong>: the operation could not get through.
+ * <li><strong>Successful results</strong> hold a value of type {@code S}, indicating that the operation <em>has
+ * completed as intended</em>.
+ * <li><strong>Failed results</strong> hold a value of type {@code F}, indicating that the operation <em>did not
+ * complete as intended</em>.
  * </ul>
  * <p>
- * On the other hand, it also holds a non-{@code null} value whose meaning totally depends on the semantics defined by
- * the operation:
- * <ul>
- * <li>A <em>successful</em> result wraps a value of type {@code S}.
- * <li>A <em>failed</em> result wraps a value of type {@code F}.
- * </ul>
- * <p>
- * Result state can be determined via {@link #hasSuccess() hasSuccess()} or {@link #hasFailure() hasFailure()}.
- * Additional methods to unwrap the included value are provided, such as {@link #orElse(Object) orElse()} (return an
- * <em>alternative success value</em> if the operation failed) and {@link #ifSuccess(Consumer) ifSuccess()} (execute a
- * block of code if the operation succeeded).
+ * The exact definitions of <em>success</em> and <em>failure</em> depend on the semantics of the operation.
  *
- * @apiNote {@code Result} is primarily, but not only, intended for use as a method return type whenever failure is
- *     expected and recoverable, and where using {@code null} is likely to cause errors. A variable whose type is
- *     {@code Result} should never itself be {@code null}; it should always point to a {@code Result} instance.
+ * @apiNote {@code Result} is primarily, but not only, intended for use as a method return type to handle anticipated
+ *     failures without throwing exceptions or returning {@code null}.
  * @implSpec This is a
- *     <a href="https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/lang/doc-files/ValueBased.html">
- *     value-based</a> type. Classes that implement {@code Result}:
- *     <ul>
- *     <li>MUST declare only {@code final} instance fields (though these may contain references to mutable objects);
- *     <li>MUST have implementations of {@code equals}, {@code hashCode}, and {@code toString} which are computed solely
- *     from the values of the class's instance fields (and the members of the objects they reference), not from the
- *     instance's identity;
- *     <li>MUST treat instances as <em>freely substitutable</em> when equal, meaning that interchanging any two
- *     instances {@code x} and {@code y} that are equal according to {@code equals()} produces no visible change in the
- *     behavior of the class's methods;
- *     <li>SHOULD NOT perform any synchronization using an instance's monitor;
- *     <li>MUST NOT declare (or has deprecated any) accessible constructors;
- *     <li>MUST NOT provide any instance creation mechanism that promises a unique identity on each method call - in
- *     particular, any factory method's contract must allow for the possibility that if two independently-produced
- *     instances are equal according to {@code
- *           equals()}, they may also be equal according to {@code ==};
- *     <li>MUST be {@code final}, and extend either {@code Object} or a hierarchy of abstract classes that declare no
- *     instance fields or instance initializers and whose constructors are empty.
- *     </ul>
- * @author Guillermo Calvo
+ *     <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/doc-files/ValueBased.html">
+ *     value-based</a> type; use of identity-sensitive operations on instances of {@code Result} should be avoided.
+ * @author <a href="https://guillermo.dev/">Guillermo Calvo</a>
  * @see com.leakyabstractions.result.api
  * @param <S> the type of the success value
  * @param <F> the type of the failure value
@@ -75,212 +48,205 @@ import java.util.stream.Stream;
 public interface Result<S, F> {
 
     /**
-     * If this is a successful result, returns {@code true}; otherwise {@code false}.
+     * Checks if this {@code Result} is successful.
      * <p>
      * <img src="doc-files/hasSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testHasSuccess(Result&lt;Integer, String&gt; result) {
-     *   final boolean x = result.hasSuccess();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * boolean x = r.hasSuccess();</code>
      * </pre>
      *
-     * @return {@code true} if successful; otherwise {@code false}
+     * @return if this {@code Result} is successful, {@code true}; otherwise, {@code false}
      * @see #hasFailure()
      */
     boolean hasSuccess();
 
     /**
-     * If this is a failed result, returns {@code true}; otherwise {@code false}.
+     * Checks if this {@code Result} is failed.
      * <p>
      * <img src="doc-files/hasFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testHasFailure(Result&lt;Integer, String&gt; result) {
-     *   boolean x = result.hasFailure();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * boolean x = r.hasFailure();</code>
      * </pre>
      *
-     * @return {@code true} if failed; otherwise {@code false}
+     * @return if this {@code Result} is failed, {@code true}; otherwise, {@code false}
      * @see #hasSuccess()
      */
     boolean hasFailure();
 
     /**
-     * If this is a successful result, returns an optional containing its success value; otherwise returns an empty
-     * optional.
+     * Returns this {@code Result}'s success value as a possibly-empty {@link Optional}.
      * <p>
      * <img src="doc-files/getSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testGetSuccess(Result&lt;Integer, String&gt; result) {
-     *   Optional&lt;Integer&gt; x = result.getSuccess();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Optional&lt;Integer&gt; x = r.getSuccess();</code>
      * </pre>
      *
-     * @return this result's success value as an optional if successful; otherwise an empty optional.
+     * @return if this {@code Result} is successful, an {@link Optional} containing its value; otherwise, an empty
+     *     {@code Optional}
      * @see #getFailure()
      */
     Optional<S> getSuccess();
 
     /**
-     * If this is a failed result, returns an optional containing its failure value; otherwise returns an empty
-     * optional.
+     * Returns this {@code Result}'s failure value as a possibly-empty {@link Optional}.
      * <p>
      * <img src="doc-files/getFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testGetFailure(Result&lt;Integer, String&gt; result) {
-     *   Optional&lt;String&gt; x = result.getFailure();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Optional&lt;String&gt; x = r.getFailure();</code>
      * </pre>
      *
-     * @return this result's failure value as an optional if failed; otherwise an empty optional.
+     * @return if this {@code Result} is failed, an {@link Optional} containing its value; otherwise, an empty
+     *     {@code Optional}
      * @see #getSuccess()
      */
     Optional<F> getFailure();
 
     /**
-     * If this is a successful result, returns its success value; otherwise returns {@code other}.
+     * Returns this {@code Result}'s success value, or the alternative one.
      * <p>
      * <img src="doc-files/orElse.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testOrElse(Result&lt;Integer, String&gt; result) {
-     *   Integer other = 8;
-     *   Integer x = result.orElse(other);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * int x = r.orElse(8);</code>
      * </pre>
      *
-     * @param other the possibly-{@code null} alternative success value
-     * @return this result's success value if successful; otherwise {@code other}
+     * @param other the alternative success value; may be {@code null}
+     * @return if this {@code Result} is successful, its value; otherwise {@code other}
      * @see #orElseMap(Function)
      */
     S orElse(S other);
 
     /**
-     * If this is a successful result, returns its success value; otherwise returns the value produced by the given
-     * mapping function.
+     * Returns this {@code Result}'s success value, or maps its failure value.
      * <p>
-     * The mapping function will be applied to this result's failure value to produce an alternative success value.
+     * If this {@code Result} is failed, {@code mapper} will be applied to its value to produce an alternative success
+     * value.
      * <p>
      * <img src="doc-files/orElseMap.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testOrElseMap(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;String, Integer&gt; mapper = f -&gt; 8;
-     *   Integer x = result.orElseMap(mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * int x = r.orElseMap(f -&gt; 8);</code>
      * </pre>
      *
-     * @param mapper the mapping function that produces the possibly-{@code null} alternative success value
-     * @return this result's success value if successful; otherwise the value produced by the mapping function
-     * @throws NullPointerException if this is a failed result and {@code mapper} is {@code null}
+     * @param mapper the mapping {@link Function} that produces the alternative success value; may return {@code null}
+     * @return if this {@code Result} is successful, its value; otherwise the value produced by {@code
+     *     mapper}
+     * @throws NullPointerException if this {@code Result} is failed and {@code mapper} is {@code
+     *     null}
      * @see #orElse(Object)
      */
     S orElseMap(Function<? super F, ? extends S> mapper);
 
     /**
-     * If this is a successful result, returns a sequential stream containing only its success value; otherwise returns
-     * an empty stream.
+     * Returns this {@code Result}'s success value as a possibly-empty {@link Stream}.
      * <p>
      * <img src="doc-files/streamSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testStreamSuccess(Result&lt;Integer, String&gt; result) {
-     *   Stream&lt;Integer&gt; x = result.streamSuccess();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Stream&lt;Integer&gt; x = r.streamSuccess();</code>
      * </pre>
      *
-     * @return this result's success value as a stream if successful; otherwise an empty stream.
+     * @return If this {@code Result} is successful, a sequential {@link Stream} containing only its value; otherwise an
+     *     empty {@code Stream}
      */
     Stream<S> streamSuccess();
 
     /**
-     * If this is a failed result, returns a sequential stream containing only its failure value; otherwise returns an
-     * empty stream.
+     * Returns this {@code Result}'s failure value as a possibly-empty {@link Stream}.
      * <p>
      * <img src="doc-files/streamFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testStreamFailure(Result&lt;Integer, String&gt; result) {
-     *   Stream&lt;String&gt; x = result.streamFailure();
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Stream&lt;String&gt; x = r.streamFailure();</code>
      * </pre>
      *
-     * @return this result's failure value as a stream if failed; otherwise an empty stream.
+     * @return if this {@code Result} is failed, a sequential {@link Stream} containing only its value; otherwise an
+     *     empty {@code Stream}
      */
     Stream<F> streamFailure();
 
     /**
-     * If this is a successful result, performs the given action with its success value; otherwise does nothing.
+     * Performs the given action with this {@code Result}'s success value.
+     * <p>
+     * If this {@code Result} is successful, performs {@code action} with its value; otherwise does nothing.
      * <p>
      * <img src="doc-files/ifSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testIfSuccess(Result&lt;Integer, String&gt; result) {
-     *   Consumer&lt;Integer&gt; task = s -&gt; {};
-     *   Result&lt;Integer, String&gt; x = result.ifSuccess(task);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, String&gt; x = r.ifSuccess(System.out::println);</code>
      * </pre>
      *
-     * @param action the action to be applied to this result's success value
-     * @throws NullPointerException if this is a successful result and {@code action} is {@code null}
-     * @return this result
+     * @param action the {@link Consumer} to be applied to this {@code Result}'s success value
+     * @throws NullPointerException if this {@code Result} is successful and {@code action} is {@code
+     *     null}
+     * @return this {@code Result}
      * @see #ifFailure(Consumer)
      * @see #ifSuccessOrElse(Consumer, Consumer)
      */
     Result<S, F> ifSuccess(Consumer<? super S> action);
 
     /**
-     * If this is a failed result, performs the given action with its failure value; otherwise does nothing.
+     * Performs the given action with this {@code Result}'s failure value.
+     * <p>
+     * If this {@code Result} is failed, performs {@code action} with its value; otherwise does nothing.
      * <p>
      * <img src="doc-files/ifFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testIfFailure(Result&lt;Integer, String&gt; result) {
-     *   Consumer&lt;Integer&gt; task = f -&gt; {};
-     *   Result&lt;Integer, String&gt; x = result.ifFailure(task);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, String&gt; x = r.ifFailure(System.err::println);</code>
      * </pre>
      *
-     * @param action the action to be applied to this result's failure value
-     * @return this result
-     * @throws NullPointerException if this is a failed result and {@code action} is {@code null}
+     * @param action the {@link Consumer} to be applied to this {@code Result}'s failure value
+     * @return this {@code Result}
+     * @throws NullPointerException if this {@code Result} is failed and {@code action} is {@code
+     *     null}
      * @see #ifSuccess(Consumer)
      * @see #ifSuccessOrElse(Consumer, Consumer)
      */
     Result<S, F> ifFailure(Consumer<? super F> action);
 
     /**
-     * If this is a successful result, performs the given success action; otherwise performs the given failure action.
+     * Performs either of the given actions with this {@code Result}'s value.
+     * <p>
+     * If this {@code Result} is successful, performs {@code successAction}; otherwise performs {@code failureAction}.
      * <p>
      * <img src="doc-files/ifSuccessOrElse.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testIfSuccessOrElse(Result&lt;Integer, String&gt; result) {
-     *   Consumer&lt;Integer&gt; task1 = s -&gt; {};
-     *   Consumer&lt;String&gt; task2 = f -&gt; {};
-     *   Result&lt;Integer, String&gt; x = result.ifSuccessOrElse(task1, task2);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, String&gt; x = r.ifSuccessOrElse(System.out::println, System.err::println);</code>
      * </pre>
      *
-     * @param successAction the action to be applied to this result's success value
-     * @param failureAction the action to be applied to this result's failure value
-     * @return this result
-     * @throws NullPointerException if this is a successful result and {@code successAction} is {@code
-     *     null}; or if it is failed and {@code failureAction} is {@code null}
+     * @param successAction the {@link Consumer} to be applied to this {@code Result}'s success value
+     * @param failureAction the {@link Consumer} to be applied to this {@code Result}'s failure value
+     * @return this {@code Result}
+     * @throws NullPointerException if this {@code Result} is successful and {@code successAction} is {@code null}; or
+     *     if it is failed and {@code failureAction} is {@code null}
      * @see #ifFailure(Consumer)
      * @see #ifSuccess(Consumer)
      */
@@ -288,141 +254,130 @@ public interface Result<S, F> {
             Consumer<? super S> successAction, Consumer<? super F> failureAction);
 
     /**
-     * If this is a successful result whose value does not match the given predicate, returns a new failed result with a
-     * value produced by the given mapping function; otherwise returns this result.
+     * Transforms this successful {@code Result} into a failed one, based on the given condition.
      * <p>
-     * The mapping function will be applied to this result's success value to produce the failure value.
+     * If this is a successful {@code Result} whose value does not satisfy {@code isAcceptable}, {@code mapper} will be
+     * applied to the value to produce a failure value.
      * <p>
      * <img src="doc-files/filter.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testFilter(Result&lt;Integer, String&gt; result) {
-     *   Predicate&lt;Integer&gt; isAcceptable = s -&gt; s &lt; 3;
-     *   Function&lt;Integer, String&lt; mapper = s -&gt; "E";
-     *   Result&lt;Integer, String&gt; x = result.filter(isAcceptable, mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, String&gt; x = r.filter(s -&gt; s &lt; 3, s -&gt; "E");</code>
      * </pre>
      *
-     * @param isAcceptable the predicate to apply to this result's success value
-     * @param mapper the mapping function that produces the failure value
-     * @return a new failed result with the value produced by {@code mapper} if this is a successful result whose value
-     *     does not match the given predicate; otherwise this result
-     * @throws NullPointerException if this is a successful result and {@code isAcceptable} is {@code
-     *     null}; or if its success value is not acceptable and {@code mapper} is {@code null} or returns {@code null}
+     * @param isAcceptable the {@link Predicate} to apply to this {@code Result}'s success value
+     * @param mapper the mapping {@link Function} that produces the failure value
+     * @return if this is a successful {@code Result} whose value is deemed not acceptable, a new failed {@code Result}
+     *     holding the value produced by {@code mapper}; otherwise, this {@code
+     *     Result}
+     * @throws NullPointerException if this {@code Result} is successful and {@code isAcceptable} is {@code null}; or if
+     *     its success value is not acceptable and {@code mapper} is {@code null} or returns {@code null}
      * @see #recover(Predicate, Function)
      */
     Result<S, F> filter(Predicate<? super S> isAcceptable, Function<? super S, ? extends F> mapper);
 
     /**
-     * If this is a failed result whose value matches the given predicate, returns a new successful result with a value
-     * produced by the given mapping function; otherwise returns this result.
+     * Transforms this failed {@code Result} into a successful one, based on the given condition.
      * <p>
-     * The mapping function will be applied to this result's failure value to produce the success value.
+     * If this is a failed {@code Result} whose value satisfies {@code isRecoverable}, {@code
+     * mapper} will be applied to the value to produce a success value.
      * <p>
      * <img src="doc-files/recover.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testRecover(Result&lt;Integer, String&gt; result) {
-     *   Predicate&lt;String&gt; isRecoverable = "B"::equals;
-     *   Function&lt;String, Integer&gt; mapper = f -&gt; 5;
-     *   Result&lt;Integer, String&gt; x = result.recover(isRecoverable, mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, String&gt; x = r.recover("B"::equals, f -&gt; 5);</code>
      * </pre>
      *
-     * @param isRecoverable the predicate to apply to this result's failure value
-     * @param mapper the mapping function that produces the success value
-     * @return a new successful result with the value produced by {@code mapper} if this is a failed result whose value
-     *     matches the given predicate; otherwise this result
-     * @throws NullPointerException if this is a failed result and {@code isRecoverable} is {@code
-     *     null}; or if its failure value is recoverable and {@code mapper} is {@code null} or returns {@code null}
+     * @param isRecoverable the {@link Predicate} to apply to this {@code Result}'s failure value
+     * @param mapper the mapping {@link Function} that produces the success value
+     * @return if this is a failed {@code Result} whose value is deemed recoverable, a new successful {@code Result}
+     *     holding the value produced by {@code mapper}; otherwise, this {@code Result}
+     * @throws NullPointerException if this {@code Result} is failed and {@code isRecoverable} is {@code null}; or if
+     *     its failure value is recoverable and {@code mapper} is {@code null} or returns {@code null}
      * @see #filter(Predicate, Function)
      */
     Result<S, F> recover(Predicate<? super F> isRecoverable, Function<? super F, ? extends S> mapper);
 
     /**
-     * If this is a successful result, returns a new successful result with the value produced by the given mapping
-     * function; otherwise returns a failed result with this result's failure value.
+     * Transforms this {@code Result}'s success value.
      * <p>
-     * The mapping function will be applied to this result's success value to produce the new success value. The type of
-     * the new success value may be different from this result's.
+     * If this {@code Result} is successful, {@code mapper} will be applied to its value to produce a new one, which may
+     * differ in type.
      * <p>
      * <img src="doc-files/mapSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testMapSuccess(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;Integer, Fruit&gt; mapper = s -&gt; CHERRIES;
-     *   Result&lt;Fruit, String&gt; x = result.mapSuccess(mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Fruit, String&gt; x = r.mapSuccess(s -&gt; CHERRIES);</code>
      * </pre>
      *
      * @param <S2> the type of the value returned by {@code mapper}
-     * @param mapper the mapping function that produces the new success value
-     * @return a new successful result with the value produced by {@code mapper} if this is a successful result;
-     *     otherwise a failed result with this result's failure value
-     * @throws NullPointerException if this is a successful result and {@code mapper} is {@code null} or returns
-     *     {@code null}
+     * @param mapper the mapping {@link Function} that produces the new success value
+     * @return if this is a successful {@code Result}, a new successful {@code Result} holding the value produced by
+     *     {@code mapper}; otherwise, this {@code Result}
+     * @throws NullPointerException if this {@code Result} is successful and {@code mapper} is {@code
+     *     null} or returns {@code null}
      * @see #map(Function, Function)
      * @see #mapFailure(Function)
      */
     <S2> Result<S2, F> mapSuccess(Function<? super S, ? extends S2> mapper);
 
     /**
-     * If this is a failed result, returns a new failed result with the value produced by the given mapping function;
-     * otherwise returns a successful result with this result's success value.
+     * Transforms this {@code Result}'s failure value.
      * <p>
-     * The mapping function will be applied to this result's failure value to produce the new failure value. The type of
-     * the new failure value may be different from this result's.
+     * If this {@code Result} is failed, {@code mapper} will be applied to its value to produce a new one, which may
+     * differ in type.
      * <p>
      * <img src="doc-files/mapFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testMapFailure(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;String, Suit&gt; mapper = f -&gt; CLUBS;
-     *   Result&lt;Integer, Suit&gt; x = result.mapFailure(mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, Suit&gt; x = r.mapFailure(f -&gt; CLUBS);</code>
      * </pre>
      *
      * @param <F2> the type of the value returned by {@code mapper}
-     * @param mapper the mapping function that produces the new failure value
-     * @return a new failed result with the value produced by {@code mapper} if this is a failed result; otherwise a
-     *     successful result with this result's success value
-     * @throws NullPointerException if this is a failed result and {@code mapper} is {@code null} or returns
-     *     {@code null}
+     * @param mapper the mapping {@link Function} that produces the new failure value
+     * @return if this is a failed {@code Result}, a new failed {@code Result} holding the value produced by
+     *     {@code mapper}; otherwise, this {@code Result}
+     * @throws NullPointerException if this {@code Result} is failed and {@code mapper} is {@code
+     *     null} or returns {@code null}
      * @see #map(Function, Function)
      * @see #mapSuccess(Function)
      */
     <F2> Result<S, F2> mapFailure(Function<? super F, ? extends F2> mapper);
 
     /**
-     * Returns a new result with the value produced by the appropriate mapping function.
+     * Transforms this {@code Result}'s success or failure value.
      * <p>
-     * Depending on this result's state, one of the two given functions will be applied to its success or failure value
-     * to produce a new value. The types of the new <em>success/failure</em> values may be different from this result's.
+     * If this is {@code Result} is successful, {@code successMapper} will be applied to its value to produce a new one.
+     * Otherwise, {@code failureMapper} will be applied to its failure value to produce a new one.
+     * <p>
+     * Both success and failure values may differ in type.
      * <p>
      * <img src="doc-files/map.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testMap(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;Integer, Fruit&gt; mapper1 = s -&gt; CHERRIES;
-     *   Function&lt;String, Suit&gt; mapper2 = f -&gt; CLUBS;
-     *   Result&lt;Fruit, Suit&gt; x = result.map(mapper1, mapper2);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Fruit, Suit&gt; x = r.map(s -&gt; CHERRIES, f -&gt; CLUBS);</code>
      * </pre>
      *
      * @param <S2> the type of the value returned by {@code successMapper}
      * @param <F2> the type of the value returned by {@code failureMapper}
-     * @param successMapper the mapping function that produces a success value
-     * @param failureMapper the mapping function that produces a failure value
-     * @return a new result with a value produced by either {@code successMapper} or {@code
-     *     failureMapper}
-     * @throws NullPointerException if this is a successful result and {@code successMapper} is {@code
-     *     null} or returns {@code null}; or if this is a failed result and {@code failureMapper} is {@code null} or
-     *     returns {@code null}
+     * @param successMapper the mapping {@link Function} that produces the new success value
+     * @param failureMapper the mapping {@link Function} that produces the new failure value
+     * @return if this is a successful {@code Result}, a new successful {@code Result} holding the value produced by
+     *     {@code successMapper}; otherwise, a new failed {@code Result} holding the value produced by
+     *     {@code failureMapper}
+     * @throws NullPointerException if this result is successful and {@code successMapper} is {@code
+     *     null} or returns {@code null}; or if this {@code Result} is failed and {@code
+     *     failureMapper} is {@code null} or returns {@code null}
      * @see #mapFailure(Function)
      * @see #mapSuccess(Function)
      */
@@ -431,29 +386,25 @@ public interface Result<S, F> {
             Function<? super F, ? extends F2> failureMapper);
 
     /**
-     * If this is a successful result, returns a new result produced by the given, {@code
-     * Result}-bearing mapping function; otherwise returns a failed result with this result's failure value.
+     * Transforms this successful {@code Result} into a different one.
      * <p>
-     * The mapping function will be applied to this result's success value to produce a new result. State and success
-     * type may be different from this result's.
+     * If this {@code Result} is successful, {@code mapper} will be applied to its value to produce a new
+     * {@code Result}, which may now hold either a success or a failure value. New success value may differ in type.
      * <p>
      * <img src="doc-files/flatMapSuccess.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testFlatMapSuccess(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;Integer, Result&lt;Fruit, String&gt;&gt; mapper =
-     *       s -&gt; s &lt; 3 ? Results.success(CHERRIES) : Results.failure("E");
-     *   Result&lt;Fruit, String&gt; x = result.flatMapSuccess(mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Fruit, String&gt; x = r.flatMapSuccess(s -&gt; s &lt; 3 ? success(CHERRIES) : failure("E"));</code>
      * </pre>
      *
-     * @param <S2> the success type of the result returned by {@code mapper}
-     * @param mapper the mapping function that produces a new result
-     * @return the result produced by {@code mapper} if this is a successful result; otherwise a failed result with this
-     *     result's failure value.
-     * @throws NullPointerException if this is a successful result and {@code mapper} is {@code null} or returns
-     *     {@code null}
+     * @param <S2> the success type of the {@code Result} returned by {@code mapper}
+     * @param mapper the mapping {@link Function} that produces a new {@code Result}
+     * @return if this {@code Result} is successful, a new {@code Result} produced by {@code mapper}; otherwise, this
+     *     {@code Result}
+     * @throws NullPointerException if this {@code Result} is successful and {@code mapper} is {@code
+     *     null} or returns {@code null}
      * @see #flatMap(Function, Function)
      * @see #flatMapFailure(Function)
      */
@@ -461,29 +412,25 @@ public interface Result<S, F> {
             Function<? super S, ? extends Result<? extends S2, ? extends F>> mapper);
 
     /**
-     * If this is a failed result, returns a new result produced by the given, {@code Result}-bearing mapping function;
-     * otherwise returns a successful result with this result's success value.
+     * Transforms this failed {@code Result} into a different one.
      * <p>
-     * The mapping function will be applied to this result's failure value to produce a new result. State and failure
-     * type may be different from this result's.
+     * If this {@code Result} is failed, {@code mapper} will be applied to its value to produce a new {@code Result},
+     * which may now hold either a success or a failure value. New failure value may differ in type.
      * <p>
      * <img src="doc-files/flatMapFailure.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testFlatMapFailure(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;String, Result&lt;Integer, Suit&gt;&gt; mapper =
-     *       f -&gt; f.equals("B") ? Results.success(5) : Results.failure(CLUBS);
-     *   Result&lt;Integer, Suit&gt; x = result.flatMapFailure(mapper);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Integer, Suit&gt; x = r.flatMapFailure(f -&gt; f.equals("B") ? success(5) : failure(CLUBS));</code>
      * </pre>
      *
-     * @param <F2> the failure type of the result returned by {@code mapper}
-     * @param mapper the mapping function that produces a new result
-     * @return the result produced by {@code mapper} if this is a failed result; otherwise a successful result with this
-     *     result's success value.
-     * @throws NullPointerException if this is a failed result and {@code mapper} is {@code null} or returns
-     *     {@code null}
+     * @param <F2> the failure type of the {@code Result} returned by {@code mapper}
+     * @param mapper the mapping {@link Function} that produces a new {@code Result}
+     * @return if this {@code Result} is failed, a new {@code Result} produced by {@code mapper}; otherwise, this
+     *     {@code Result}
+     * @throws NullPointerException if this {@code Result} is failed and {@code mapper} is {@code
+     *     null} or returns {@code null}
      * @see #flatMap(Function, Function)
      * @see #flatMapSuccess(Function)
      */
@@ -491,32 +438,34 @@ public interface Result<S, F> {
             Function<? super F, ? extends Result<? extends S, ? extends F2>> mapper);
 
     /**
-     * Returns a new result produced by the appropriate {@code Result}-bearing mapping function.
+     * Transforms this {@code Result} into a different one.
      * <p>
-     * Depending on this result's state, one of the two given functions will be applied to its success or failure value
-     * to produce a new result. State and types may be different from this result's.
+     * If this {@code Result} is successful, {@code successMapper} will be applied to its value to produce a new
+     * {@code Result}; otherwise, {@code failureMapper} will be applied to its value to produce a new {@code Result}.
+     * <p>
+     * The new {@code Result} may now hold either a success or a failure value. Both may differ in type.
      * <p>
      * <img src="doc-files/flatMap.svg" alt="">
      *
      * <pre class="row-color rowColor">
      * <code>&nbsp;
-     * void testFlatMap(Result&lt;Integer, String&gt; result) {
-     *   Function&lt;Integer, Result&lt;Fruit, Suit&gt;&gt; mapper1 =
-     *       s -&gt; s &lt; 3 ? success(CHERRIES) : failure(SPADES);
-     *   Function&lt;String, Result&lt;Fruit, Suit&gt;&gt; mapper2 =
-     *       f -&gt; f.equals("B") ? success(WATERMELON) : failure(CLUBS);
-     *   Result&lt;Fruit, Suit&gt; x = result.flatMap(mapper1, mapper2);
-     * }</code>
+     * Result&lt;Integer, String&gt; r = getResult();
+     * Result&lt;Fruit, Suit&gt; x = r.flatMap(s -&gt; s &lt; 3 ? success(CHERRIES) : failure(SPADES),
+     *     f -&gt; f.equals("B") ? success(WATERMELON) : failure(CLUBS));</code>
      * </pre>
      *
-     * @param <S2> the success type of the result returned by the given functions
-     * @param <F2> the failure type of the result returned by the given functions
-     * @param successMapper the mapping function that produces a new result if this is a successful result
-     * @param failureMapper the mapping function that produces a new result if this is a failed result
-     * @return the result produced by either {@code successMapper} or {@code failureMapper}
-     * @throws NullPointerException if this is a successful result and {@code successMapper} is {@code
-     *     null} or returns {@code null}; or if this is a failed result and {@code failureMapper} is {@code null} or
-     *     returns {@code null}
+     * @param <S2> the success type of the {@code Result} returned by {@code successMapper} and {@code
+     *     failureMapper}
+     * @param <F2> the failure type of the {@code Result} returned by {@code successMapper} and {@code
+     *     failureMapper}
+     * @param successMapper the mapping {@link Function} that produces a new {@code Result} if this {@code Result} is
+     *     successful
+     * @param failureMapper the mapping {@link Function} that produces a new {@code Result} if this {@code Result} is
+     *     failed
+     * @return the {@code Result} produced by either {@code successMapper} or {@code failureMapper}
+     * @throws NullPointerException if this {@code Result} is successful and {@code successMapper} is {@code null} or
+     *     returns {@code null}; or if this {@code Result} is failed and {@code
+     *     failureMapper} is {@code null} or returns {@code null}
      * @see #flatMapFailure(Function)
      * @see #flatMapSuccess(Function)
      */
@@ -525,7 +474,7 @@ public interface Result<S, F> {
             Function<? super F, ? extends Result<? extends S2, ? extends F2>> failureMapper);
 
     /**
-     * Indicates whether some other object is "equal to" this result.
+     * Indicates whether some other object is "equal to" this {@code Result}.
      * <p>
      * The other object is considered equal if:
      * <ul>
@@ -542,21 +491,21 @@ public interface Result<S, F> {
     boolean equals(Object obj);
 
     /**
-     * Returns the hash code of this result's success or failure value.
+     * Returns the hash code of this {@code Result}'s value.
      *
-     * @return hash code value of this result's success or failure value
+     * @return hash code value of this {@code Result}'s value
      */
     @Override
     int hashCode();
 
     /**
-     * Returns a non-empty string representation of this result suitable for debugging.
+     * Returns a string representation of this {@code Result}.
      * <p>
      * The exact presentation format is unspecified and may vary between implementations and versions.
      *
-     * @implSpec The returned string must include the string representation of its success or failure value. Successful
-     *     and failed results must be unambiguously differentiable.
-     * @return the string representation of this instance
+     * @implSpec The returned string should be suitable for debugging and must include the string representation of its
+     *     value. Successful and failed {@code Result} instances must be unambiguously differentiable.
+     * @return a string representation of this {@code Result}
      */
     @Override
     String toString();

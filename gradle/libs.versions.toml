@@ -1,8 +1,8 @@
 [versions]
 google-java-format = "1.19.2"
-japicmp = "0.4.2"
+japicmp = "0.4.3"
 nexus-publish = "2.0.0"
-sonarqube = "5.0.0.4638"
+sonarqube = "5.1.0.4882"
 spotless = "6.25.0"
 
 [plugins]
