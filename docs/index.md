@@ -1,100 +1,67 @@
 ---
 title: Result Library API
 description: A Java library to handle success and failure without exceptions
-image: https://dev.leakyabstractions.com/result/result-magic-ball.png
+image: https://dev.leakyabstractions.com/result/result-banner.png
 ---
 
-![Result Library for Java](https://dev.leakyabstractions.com/result/result-magic-ball.png)
-
-> *If you seek advice... then this Java library is for you! `Result` objects have all the answers you need. Start by
-> "asking the ball" a Yes or No question, then turn it over and let the answers magically appear. Results can be either
-> positive ("Success") or negative ("Failure"). Great fun for software developers and adults alike. Colors and
-> decorations may vary.*
+# Result Library ![][LOGO]
 
 
-# Getting Started
+### A Java library to handle success and failure without exceptions
 
-Instances of `Result` represent either the *success* or *failure* of an operation.
+Wave goodbye to slow exceptions and embrace clean, efficient error handling by encapsulating operations that may succeed
+or fail in a type-safe way.
 
-Result objects are immutable and type-safe. Operations that succeed produce results encapsulating a success value;
-operations that fail produce results with a failure value.
+- **Boost Performance**: Avoid exception overhead and benefit from faster operations.
+- **Simple API**: Leverage a familiar interface for a smooth learning curve.
+- **Streamlined Error Handling**: Handle failure explicitly to simplify error propagation.
+- **Safe Execution**: Ensure safer and more predictable operation outcomes.
+- **Enhanced Readability**: Reduce complexity to make your code easier to understand.
+- **Functional Style**: Embrace elegant, functional programming paradigms.
+- **Lightweight**: Keep your project slim with no extra dependencies.
+- **Open Source**: Enjoy transparent, permissive Apache 2 licensing.
+- **Pure Java**: Seamless compatibility from JDK8 to the latest versions.
 
-Treating failed operations as regular values allows for a functional approach to error handling -- instead of throwing
-exceptions and using try-catch blocks. In terms of functional programming, `Result` is just a monadic container type.
-
-The best way to think of `Result` is as a super-powered version of `Optional`. The only difference is that, whereas
-`Optional` may contain a value or be _empty_, `Result` contains either a _success_ value or a _failure_ value.
-
-
-## Creating Result Objects
-
-- `Results.success`
-  creates a new successful result containing the given value.
-- `Results.failure`
-  creates a new failed result containing the given value.
-- `Results.ofNullable`
-  creates a new result based on the given possibly-null value.
-- `Results.ofOptional`
-  creates a new result based on the given possibly-empty optional.
-- `Results.ofCallable`
-  creates a new result based on the given possibly-throwing task.
+> `Result` objects represent the outcome of an operation, removing the need to check for null. Operations that succeed
+> produce results encapsulating a *success* value; operations that fail produce results with a *failure* value. Success
+> and failure can be represented by whatever types make the most sense for each operation.
 
 
-# Basic Usage
+## Results in a Nutshell
 
-## Unwrapping Values
+In Java, methods that can fail typically do so by throwing exceptions. Then, exception-throwing methods are called from
+inside a `try` block to handle errors in a separate `catch` block.
 
-- [`hasSuccess`][JAVADOC_HAS_SUCCESS]
-  checks if a result contains a success value.
-- [`hasFailure`][JAVADOC_HAS_FAILURE]
-  checks if a result contains a failure value.
-- [`getSuccess`][JAVADOC_GET_SUCCESS]
-  returns a result's success value as a possibly-empty optional.
-- [`getFailure`][JAVADOC_GET_FAILURE]
-  returns a result's failure value as a possibly-empty optional.
-- [`orElse`][JAVADOC_OR_ELSE]
-  returns a result's success value, or the given one.
-- [`orElseMap`][JAVADOC_OR_ELSE_MAP]
-  returns a result's success value, or maps its failure value.
-- [`streamSuccess`][JAVADOC_STREAM_SUCCESS]
-  returns a result's success value as a possibly-empty stream.
-- [`streamFailure`][JAVADOC_STREAM_FAILURE]
-  returns a result's failure value as a possibly-empty stream.
+![Using Exceptions][USING_EXCEPTIONS]
 
+This approach is lengthy, and that's not the only problem -- it's also very slow.
 
-## Conditional Actions
+> Conventional wisdom says **exceptional logic shouldn't be used for normal program flow**. Results make us deal with
+> expected error situations explicitly to enforce good practices and make our programs [run faster][BENCHMARK].
 
-- [`ifSuccess`][JAVADOC_IF_SUCCESS]
-  performs the given action with a successful result's value.
-- [`ifFailure`][JAVADOC_IF_FAILURE]
-  performs the given action with a failed result's value.
-- [`ifSuccessOrElse`][JAVADOC_IF_SUCCESS_OR_ELSE]
-  performs either of the given actions with a result's value.
+Let's now look at how the above code could be refactored if `connect()` returned a `Result` object instead of throwing
+an exception.
+
+![Using Results][USING_RESULTS]
+
+In the example above, we used only 4 lines of code to replace the 10 that worked for the first one. But we can
+effortlessly make it shorter by chaining methods. In fact, since we were returning `-1` just to signal that the
+underlying operation failed, we are better off returning a `Result` object upstream. This will allow us to compose
+operations on top of `getServerUptime()` just like we did with `connect()`.
+
+![Embracing Results][EMBRACING_RESULTS]
+
+> `Result` objects are immutable, providing thread safety without the need for synchronization. This makes them ideal
+> for multi-threaded applications, ensuring predictability and eliminating side effects.
 
 
-# Advanced Usage
+## Ready to Tap into the Power of Results?
 
-## Screening Results
+Read the [guide][GUIDE_HOME] and transform your error handling today.
 
-- [`filter`][JAVADOC_FILTER]
-  transforms a successful result into a failed one, based on the given condition.
-- [`recover`][JAVADOC_RECOVER]
-  transforms a failed result into a successful one, based on the given condition.
-
-## Transforming Values
-
-- [`mapSuccess`][JAVADOC_MAP_SUCCESS]
-  transforms the value of a successful result.
-- [`mapFailure`][JAVADOC_MAP_FAILURE]
-  transforms the value of a failed result.
-- [`map`][JAVADOC_MAP]
-  transforms either the success or the failure value of a result.
-- [`flatMapSuccess`][JAVADOC_FLATMAP_SUCCESS]
-  transforms a successful result into a different one.
-- [`flatMapFailure`][JAVADOC_FLATMAP_FAILURE]
-  transforms a failed result into a different one.
-- [`flatMap`][JAVADOC_FLATMAP]
-  transforms a result into a different one.
+- 🌱 [Getting Started][GUIDE_START]
+- 🪴 [Basic Usage][GUIDE_BASIC]
+- 🚀 [Advanced Usage][GUIDE_ADVANCED]
 
 
 # Additional Info
@@ -178,27 +145,16 @@ See the License for the specific language governing permissions and limitations 
 [BENCHMARK]:                    https://dev.leakyabstractions.com/result-benchmark/
 [CODE_OF_CONDUCT]:              https://github.com/LeakyAbstractions/.github/blob/main/CODE_OF_CONDUCT.md
 [CONTRIBUTING]:                 https://github.com/LeakyAbstractions/.github/blob/main/CONTRIBUTING.md
+[EMBRACING_RESULTS]:            embracing-results.png
+[GUIDE_ADVANCED]:               https://result.leakyabstractions.com/docs/advanced
+[GUIDE_BASIC]:                  https://result.leakyabstractions.com/docs/basic
+[GUIDE_HOME]:                   https://result.leakyabstractions.com/
+[GUIDE_START]:                  https://result.leakyabstractions.com/docs/start
 [GUILLERMO]:                    https://guillermo.dev/
 [GUILLERMO_IMAGE]:              https://guillermo.dev/assets/images/thumb.png
-[JAVADOC]:                      https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/
-[JAVADOC_FILTER]:               https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#filter-java.util.function.Predicate-java.util.function.Function-
-[JAVADOC_FLATMAP]:              https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#flatMap-java.util.function.Function-java.util.function.Function-
-[JAVADOC_FLATMAP_FAILURE]:      https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#flatMapFailure-java.util.function.Function-
-[JAVADOC_FLATMAP_SUCCESS]:      https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#flatMapSuccess-java.util.function.Function-
-[JAVADOC_GET_FAILURE]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#getFailure--
-[JAVADOC_GET_SUCCESS]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#getSuccess--
-[JAVADOC_HAS_FAILURE]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#hasFailure--
-[JAVADOC_HAS_SUCCESS]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#hasSuccess--
-[JAVADOC_IF_FAILURE]:           https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#ifFailure-java.util.function.Consumer-
-[JAVADOC_IF_SUCCESS]:           https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#ifSuccess-java.util.function.Consumer-
-[JAVADOC_IF_SUCCESS_OR_ELSE]:   https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#ifSuccessOrElse-java.util.function.Consumer-java.util.function.Consumer-
-[JAVADOC_MAP]:                  https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#map-java.util.function.Function-java.util.function.Function-
-[JAVADOC_MAP_FAILURE]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#mapFailure-java.util.function.Function-
-[JAVADOC_MAP_SUCCESS]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#mapSuccess-java.util.function.Function-
-[JAVADOC_OR_ELSE]:              https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#orElse-S-
-[JAVADOC_OR_ELSE_MAP]:          https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#orElseMap-java.util.function.Function-
-[JAVADOC_RECOVER]:              https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#recover-java.util.function.Predicate-java.util.function.Function-
-[JAVADOC_STREAM_FAILURE]:       https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#streamFailure--
-[JAVADOC_STREAM_SUCCESS]:       https://dev.leakyabstractions.com/result-api/javadoc/{{ site.current_version }}/com/leakyabstractions/result/api/Result.html#streamSuccess--
+[JAVADOC]:                      https://javadoc.io/doc/com.leakyabstractions/result-api/
+[LOGO]:                         result-logo.svg
 [PRAGVER]:                      https://pragver.github.io/
 [SUPPORT]:                      https://github.com/LeakyAbstractions/.github/blob/main/SUPPORT.md
+[USING_EXCEPTIONS]:             using-exceptions.png
+[USING_RESULTS]:                using-results.png
