@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Pragmatic Versioning](https://pragver.github.io/spec/1.0.0.0.html).
 
 
+## [Unreleased]
+
+No unreleased changes.
+
+
 ## [1.0.0.0]
 
 First stable version of Result API.
@@ -16,4 +21,5 @@ First stable version of Result API.
 - Interface `com.leakyabstractions.result.api.Result`.
 
 
+[Unreleased]: https://github.com/LeakyAbstractions/result-api/compare/main...develop
 [1.0.0.0]: https://github.com/LeakyAbstractions/result-api/releases/tag/1.0.0.0
