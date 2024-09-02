@@ -1,13 +1,16 @@
 
 [![Build Status][BADGE_BUILD_STATUS]][BUILD_STATUS]
 [![Quality Gate Status][BADGE_QUALITY_GATE]][QUALITY_GATE]
+[![OpenSSF Best Practices][BADGE_BEST_PRACTICES]][BEST_PRACTICES]
 [![Maven Central][BADGE_ARTIFACTS]][ARTIFACTS]
 [![Javadoc][BADGE_JAVADOC]][JAVADOC]
-[![Benchmark Report][BADGE_BENCHMARK]][BENCHMARK]
+[![Free ebook][BADGE_GUIDE_BOOK]][GUIDE_BOOK]
 
 
 ![][LOGO_DARK]
 ![][LOGO_LIGHT]
+
+[![Benchmark Report][BADGE_BENCHMARK]][BENCHMARK]
 
 ## A Java library to handle success and failure without exceptions
 
@@ -67,6 +70,8 @@ Read the [guide][GUIDE_HOME] and transform your error handling today.
 - :seedling: [Getting Started][GUIDE_START]
 - :potted_plant: [Basic Usage][GUIDE_BASIC]
 - :rocket: [Advanced Usage][GUIDE_ADVANCED]
+
+Also available as an **ebook** in multiple formats. [Download your free copy now!][GUIDE_BOOK]
 
 
 ## Releases
@@ -147,23 +152,27 @@ See the License for the specific language governing permissions and limitations 
 [AUTHOR]:                       https://github.com/guillermocalvo/
 [BADGE_ARTIFACTS]:              https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-api/badge.json&logo=Gradle&label=Maven+Central&labelColor=555
 [BADGE_BENCHMARK]:              https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-benchmark/badge.json&style=flat
+[BADGE_BEST_PRACTICES]:         https://www.bestpractices.dev/projects/8122/badge
 [BADGE_BUILD_STATUS]:           https://github.com/leakyabstractions/result-api/workflows/Build/badge.svg
-[BADGE_JAVADOC]:                https://img.shields.io/endpoint?url=https://dev.leakyabstractions.com/result-api/badge.json&label=javadoc&color=blue
+[BADGE_GUIDE_BOOK]:             https://img.shields.io/badge/Free_book-444?logo=leanpub
+[BADGE_JAVADOC]:                https://javadoc.io/badge2/com.leakyabstractions/result-api/javadoc.svg
 [BADGE_QUALITY_GATE]:           https://sonarcloud.io/api/project_badges/measure?project=LeakyAbstractions_result-api&metric=alert_status
 [BENCHMARK]:                    https://dev.leakyabstractions.com/result-benchmark/
+[BEST_PRACTICES]:               https://www.bestpractices.dev/projects/8122
 [BUILD_STATUS]:                 https://github.com/LeakyAbstractions/result-api/actions?query=workflow%3ABuild
 [CODE_OF_CONDUCT]:              https://github.com/LeakyAbstractions/.github/blob/main/CODE_OF_CONDUCT.md
 [CONTRIBUTING]:                 https://github.com/LeakyAbstractions/.github/blob/main/CONTRIBUTING.md
 [EMBRACING_RESULTS]:            docs/embracing-results.png
-[LOGO_DARK]:                    docs/result-logo.dark.svg#gh-dark-mode-only
-[LOGO_LIGHT]:                   docs/result-logo.svg#gh-light-mode-only
 [GUIDE_ADVANCED]:               https://result.leakyabstractions.com/docs/advanced
 [GUIDE_BASIC]:                  https://result.leakyabstractions.com/docs/basic
+[GUIDE_BOOK]:                   https://leanpub.com/result/
 [GUIDE_HOME]:                   https://result.leakyabstractions.com/
 [GUIDE_START]:                  https://result.leakyabstractions.com/docs/start
 [GUILLERMO]:                    https://guillermo.dev/
 [GUILLERMO_IMAGE]:              https://guillermo.dev/assets/images/thumb.png
-[JAVADOC]:                      https://javadoc.io/doc/com.leakyabstractions/result-api/latest/
+[JAVADOC]:                      https://javadoc.io/doc/com.leakyabstractions/result-api/
+[LOGO_DARK]:                    docs/result-logo.dark.svg#gh-dark-mode-only
+[LOGO_LIGHT]:                   docs/result-logo.svg#gh-light-mode-only
 [PRAGVER]:                      https://pragver.github.io/
 [QUALITY_GATE]:                 https://sonarcloud.io/dashboard?id=LeakyAbstractions_result-api
 [SUPPORT]:                      https://github.com/LeakyAbstractions/.github/blob/main/SUPPORT.md
