@@ -40,7 +40,8 @@ import java.util.stream.Stream;
  *     <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/doc-files/ValueBased.html">
  *     value-based</a> type; use of identity-sensitive operations on instances of {@code Result} should be avoided.
  * @author <a href="https://guillermo.dev/">Guillermo Calvo</a>
- * @see com.leakyabstractions.result.api
+ * @see com.leakyabstractions.result.api Introduction
+ * @see <a href="https://result.leakyabstractions.com/docs/start">Getting Started</a>
  * @param <S> the type of the success value
  * @param <F> the type of the failure value
  */

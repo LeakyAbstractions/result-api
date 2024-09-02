@@ -47,7 +47,7 @@
  * <p>
  * Conventional wisdom says <strong> exceptional logic shouldn't be used for normal program flow</strong>. Results make
  * us deal with expected error situations explicitly to enforce good practices and make our programs
- * <a href="https://result.leakyabstractions.com/extra/benchmark">run faster</a>.
+ * <a href="https://dev.leakyabstractions.com/result-benchmark/">run faster</a>.
  * <p>
  * Let's now look at how the above code could be refactored if {@code connect()} returned a
  * {@link com.leakyabstractions.result.api.Result} object instead of throwing an exception.
@@ -82,6 +82,7 @@
  *
  * @author <a href="https://guillermo.dev/">Guillermo Calvo</a>
  * @see <a href="https://result.leakyabstractions.com/docs/start">Quick guide</a>
+ * @see <a href="https://leanpub.com/result/">Free book</a>
  * @see <a href="https://github.com/LeakyAbstractions/result-api/">Source code</a>
  * @see com.leakyabstractions.result.api.Result
  */
