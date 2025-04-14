@@ -3,7 +3,7 @@ google-java-format = "1.19.2"
 japicmp = "0.4.6"
 nexus-publish = "2.0.0"
 sonarqube = "6.1.0.5360"
-spotless = "7.0.2"
+spotless = "7.0.3"
 
 [plugins]
 japicmp = { id = "me.champeau.gradle.japicmp", version.ref = "japicmp" }
