@@ -9,7 +9,9 @@ and this project adheres to [Pragmatic Versioning](https://pragver.github.io/spe
 
 ## [Unreleased]
 
-No unreleased changes.
+### Added
+
+- Add automatic module name `com.leakyabstractions.result.api`.
 
 
 ## [1.0.0.0]
