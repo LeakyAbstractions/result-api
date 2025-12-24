@@ -4,7 +4,6 @@ javadoc {
         title = project.artifactName
         header "${project.artifactName} ${rootProject.version}"
         author true
-        links 'https://docs.oracle.com/javase/8/docs/api/'
     }
     configure(options) {
         tags(
