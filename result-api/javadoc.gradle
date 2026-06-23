@@ -7,10 +7,10 @@ javadoc {
     }
     configure(options) {
         tags(
-                'apiNote:a:API Note:',
-                'implNote:a:Impl Note:',
-                'implSpec:a:Impl Spec:'
-                )
+        'apiNote:a:API Note:',
+        'implNote:a:Impl Note:',
+        'implSpec:a:Impl Spec:'
+        )
     }
     doLast {
         // work around https://github.com/gradle/gradle/issues/4046
