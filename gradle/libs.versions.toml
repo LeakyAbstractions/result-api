@@ -1,9 +1,9 @@
 [versions]
-google-java-format = "1.35.0"
+google-java-format = "1.36.1"
 japicmp = "0.4.6"
 nexus-publish = "2.0.0"
-sonarqube = "7.3.1.8318"
-spotless = "8.8.0"
+sonarqube = "7.4.0.8496"
+spotless = "8.10.0"
 
 [plugins]
 japicmp = { id = "me.champeau.gradle.japicmp", version.ref = "japicmp" }
