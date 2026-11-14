@@ -2,7 +2,7 @@
 google-java-format = "2.0.0"
 japicmp = "0.4.6"
 nexus-publish = "2.0.0"
-sonarqube = "7.5.0.8588"
+sonarqube = "7.6.0.18749"
 spotless = "8.11.0"
 
 [plugins]
